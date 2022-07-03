@@ -21,6 +21,8 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+const PROXY_PORT = process.env.PROXY_PORT || 8213;
+
 var http = require('http'),
     net = require('net'),
     httpProxy = require('http-proxy'),
