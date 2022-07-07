@@ -1,0 +1,23 @@
+extends layout
+include mixins/helpers.pug
+
+block content 
+  if message
+    p= message 
+    br
+  if messages
+    ol
+      each val, index in messages
+        li= val 
+        
+  if req.query.error
+    p 
+      +warning-symbol
+      br
+      b Error:
+      | !{req.query.error} - 
+      i !{req.query.error_description}
+    p
+
+  else 
+    p OAuth flow successful!

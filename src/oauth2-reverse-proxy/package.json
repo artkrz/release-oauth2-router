@@ -1,5 +1,5 @@
 {
-  "name": "oauth2proxy",
+  "name": "oauth2-reverse-proxy",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

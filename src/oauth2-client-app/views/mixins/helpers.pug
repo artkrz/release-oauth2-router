@@ -1,0 +1,7 @@
+mixin authButton
+    form(method="get" action="/auth?flow=code")
+        button(type="submit") Start Authorization Code flow
+
+mixin warning-symbol 
+    font(size='40', color='red')
+        span &#9888;

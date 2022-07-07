@@ -21,7 +21,7 @@
   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-const PROXY_PORT = process.env.PROXY_PORT || 8213;
+const PORT = process.env.PORT || 8213;
 
 var http = require('http'),
     net = require('net'),
@@ -36,7 +36,7 @@ var server = http.createServer(function (req, res) {
   var parsedUrl = url.parse(req.url);
   var target = parsedUrl.protocol + '//' + parsedUrl.hostname;
   proxy.web(req, res, {target: target, secure: false});
-}).listen(8213);
+}).listen(PORT);
 
 server.on('connect', function (req, socket) {
   console.log('Receiving reverse proxy request for:' + req.url);

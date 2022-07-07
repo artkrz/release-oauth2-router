@@ -1,0 +1,61 @@
+html
+  head
+    title= title
+  body
+    h2= title
+    br
+    block content
+    br
+    br
+    hr
+    br
+    p 
+      h3 HTTPS/Request
+      br
+      if req
+        table(border='1')
+          tr
+            th Property
+            th Value
+          tr 
+            td Method & Path
+            td
+              | !{req.method} !{req.path}
+          tr 
+            td Hostname
+            td= req.hostname
+          tr 
+            td Requested by
+            td= req.ip 
+          tr 
+            td Protocol
+            td= req.protocol
+          tr 
+            td Headers 
+            td
+              if req.headers
+                table 
+                  each val, key in req.headers 
+                    tr
+                      td
+                        b= key
+                        td= val
+              else 
+                i No headers in request
+          tr 
+            td Query Parameters 
+              td 
+                - if (Object.keys(req.query).length > 0)
+                  table 
+                    each val, key in req.query
+                      tr 
+                        td
+                          b= key + " = "
+                          td= val
+                - else 
+                  i No parameters in request
+          tr 
+            td Body
+            td= req.body
+      else 
+        i Express did not pass 'req' parameter!

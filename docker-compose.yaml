@@ -3,20 +3,43 @@ version: '3'
 services:
   proxy:
     build:
-      context: ./src
+      context: ./src/oauth2-reverse-proxy
       dockerfile: Dockerfile
     image: proxy
-    container_name: nodejs
+    container_name: oauth2-reverse-proxy
     restart: unless-stopped
-    env_file: ./src/.env
+    environment:
+      port: 8213
     ports:
       - "8213:8213"
     volumes:
-      - ./src:/home/node/app
-      - ./src/node_modules:/home/node/app/node_modules
+      - ./src/oauth2-reverse-proxy:/home/node/app
+      - ./src/oauth2-reverse-proxy/node_modules:/home/node/app/node_modules
     networks:
       - app-network
-    command: /home/node/app/node_modules/.bin/nodemon app.js
+    command: /home/node/app/node_modules/.bin/nodemon index.js
+
+  clientApp:
+    build:
+      context: ./src/oauth2-client-app
+      dockerfile: Dockerfile
+    image: proxy
+    container_name: outh2-client-app
+    restart: unless-stopped
+    environment:
+      port: 8080
+      http_proxy: "http://localhost:8213"
+      https_proxy: "https://localhost:8213"
+      OKTA_CLIENT_ID: "0oa5nxqk9zTjKvCqU5d7"
+      OKTA_CLIENT_SECRET: "${OKTA_CLIENT_SECRET}"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/oauth2-client-app:/home/node/app
+      - ./src/oauth2-client-app/node_modules:/home/node/app/node_modules
+    networks:
+      - app-network
+    command: /home/node/app/node_modules/.bin/nodemon index.js
 
 networks:
   app-network:
