@@ -1,6 +1,8 @@
 html
   head
     title= title
+    style
+      include css/json-viewer.css
   body
     h2= title
     br
@@ -59,3 +61,7 @@ html
             td= req.body
       else 
         i Express did not pass 'req' parameter!
+
+  block footer
+
+  block scripts

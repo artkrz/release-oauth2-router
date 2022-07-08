@@ -2,6 +2,9 @@ extends layout
 include mixins/helpers.pug
 
 block content 
-  p Hello, world!
+  br
 
-  +authButton
+  p Test an OAuth flow using the button(s) below:
+
+  form(method="get" action="/login?flow=code")
+        button(type="submit") Authorization Code

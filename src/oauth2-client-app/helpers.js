@@ -27,7 +27,7 @@ exports.addHTTPLogInfoToRequest = (req, res, next) => {
   const urlQuery = url.parse(fullUrl, true).query;
   const queryInReq = Object.keys(req.query).length > 0;
   console.log(
-    `${new Date().toISOString()} - ${req.ip} - ${req.method} ${req.protocol}://${req.hostname}`
+    `${new Date().toISOString()} - ${req.ip} - ${req.method} ${req.protocol}://${req.hostname}${req.path}`
   );
   const queryToPrint = queryInReq ? req.query : urlQuery;
   Object.keys(queryToPrint).forEach(key => {

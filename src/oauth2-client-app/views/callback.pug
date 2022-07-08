@@ -1,23 +1,38 @@
 extends layout
 include mixins/helpers.pug
+include mixins/json-viewer.pug
 
 block content 
+  
   if message
     p= message 
     br
+
   if messages
     ol
       each val, index in messages
-        li= val 
+        li= val
+  
+  if token
+    p !{JSON.stringify(token)}
+    span(id="token")
+    div(id="json")
+    
+      
         
-  if req.query.error
+  if error_code
     p 
       +warning-symbol
       br
-      b Error:
-      | !{req.query.error} - 
-      i !{req.query.error_description}
-    p
-
+      | !{error_code} - 
+      i !{error_message}
   else 
     p OAuth flow successful!
+
+block scripts
+  if token
+    +json-viewer
+    script. 
+      var jsonViewer = new JSONViewer();
+      document.querySelector("#json").appendChild(jsonViewer.getContainer());
+      jsonViewer.showJSON(!{JSON.stringify(token)}, 3, 3);

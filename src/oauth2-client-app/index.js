@@ -15,14 +15,12 @@ app.set('views', __dirname + '/views');
 
 var oauthAppConfig;
 
-console.log(JSON.stringify(process.env, null, 2));
-
 async function main() {
   oauthAppConfig = new ClientOAuth2(oauthConfigs.oktaWebApp);
   app.listen(PORT, () => { console.log(`listening on port ${PORT}\n`) });
 }
 
-app.get('/auth', async function (req, res) {
+app.get('/login', async function (req, res) {
   var uri;
   switch (req.query.flow) {
     case (oauthFlowTypes.AUTHORIZATION_CODE):
@@ -44,24 +42,36 @@ app.get('/', async function (req, res) {
 });
 
 app.get('/callback', async function (req, res) {
-  var messages = [];
-  messages.push("Successfully retrieved authorization code " + url.parse(req.originalUrl,true).query.code);
-  console.log('Callback URL: ' + req.originalUrl)
+
+  let messages = [];
+  let token = false;
+  let error_code = false;
+  let error_message = false;  
 
   try {
-    console.log(`Getting token...`);
-    var token = await oauthAppConfig.code.getToken(req.originalUrl);
+    messages.push("Retrieved authorization grant: " + url.parse(req.originalUrl,true).query.code);
+    console.log('Callback URL: ' + req.originalUrl)
+    
+    console.log(`Getting access token...`);
+    token = await oauthAppConfig.code.getToken(req.originalUrl);
+    console.log(`Access token retrieved.`);
+    messages.push('Retrieved token.');
+    token = token.data;
   } 
-  catch(err) { 
-    console.log('Failed to get token:' + err);
-    req.query.error = err.code;
-    req.query.error_description = err.message;
+  catch(err) {
+    console.error('Error retrieving access token: ' + err.code + ' - ' + err.message);
+    error_code = err.code;
+    error_message = err.message;
+    messages.push('Failed to retrieve access token.');
   }
-  
+
   return res.render('callback', { 
     title: 'OAuth2 callback result', 
     req: req.HTTPLogInfo,
-    messages
+    messages,
+    token,
+    error_code,
+    error_message
     }
   );  
   
