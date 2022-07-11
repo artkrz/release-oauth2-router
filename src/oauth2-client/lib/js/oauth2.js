@@ -3,8 +3,12 @@ const OKTA_CLIENT_SECRET = process.env.OKTA_CLIENT_SECRET;
 
 if (!OKTA_CLIENT_SECRET) throw new Error('Missing environment variable OKTA_CLIENT_SECRET');
 
-const oauthConfigs = {
-    oktaWebApp: {
+exports.FLOW_TYPE = {
+    code: 'code'
+  };
+
+exports.CLIENT_CONFIG = {
+    okta: {
         clientId:  "0oa5nxqk9zTjKvCqU5d7",
         clientSecret: OKTA_CLIENT_SECRET,
         accessTokenUri: `https://${OKTA_DOMAIN}/oauth2/v1/token`, 
@@ -14,5 +18,3 @@ const oauthConfigs = {
         state: 'thisIsSomeRaandomState123'
     }
 };
-
-module.exports = oauthConfigs;

@@ -2,3 +2,5 @@ node_modules
 
 # May contain secrets
 .env
+
+build

@@ -12,6 +12,9 @@ exports.getRandomString = (length) => {
 }
 
 exports.addHTTPLogInfoToRequest = (req, res, next) => {
+
+  if (req.path === '/favicon.ico') return;
+
   req.HTTPLogInfo = {
     ip: req.ip,
     protocol: req.protocol,
@@ -26,9 +29,6 @@ exports.addHTTPLogInfoToRequest = (req, res, next) => {
   const fullUrl = `${req.protocol}://${req.hostname}${req.originalUrl}`;
   const urlQuery = url.parse(fullUrl, true).query;
   const queryInReq = Object.keys(req.query).length > 0;
-  console.log(
-    `${new Date().toISOString()} - ${req.ip} - ${req.method} ${req.protocol}://${req.hostname}${req.path}`
-  );
   const queryToPrint = queryInReq ? req.query : urlQuery;
   Object.keys(queryToPrint).forEach(key => {
     console.log(`  ${key} = ${queryToPrint[key]}`)
@@ -38,22 +38,27 @@ exports.addHTTPLogInfoToRequest = (req, res, next) => {
 
 exports.morganLogHandler = (tokens, req, res) => {
 
-   var status = headersSent(res)
+  if (req.path === '/favicon.ico') return;
+
+    var status = headersSent(res)
     ? res.statusCode
     : undefined
 
-   // get status color
-  var color = status >= 500 ? 31 // red
-   : status >= 400 ? 33 // yellow
-      : status >= 300 ? 36 // cyan
-         : status >= 200 ? 32 // green
-         : 0 // no color
+    // get status color
+    var color = status >= 500 ? 31 // red
+    : status >= 400 ? 33 // yellow
+        : status >= 300 ? 36 // cyan
+          : status >= 200 ? 32 // green
+          : 0 // no color
+    var date = new Date().toISOString();
+    date = date.substring(0, date.indexOf('.')); 
+    return [
+      date + ' ',
+      `\x1b[${color}m` + status + '\x1b[0m', '-',
+      // tokens['response-time'](req, res), 'ms - ',
+      `${req.ip} - ${req.method} ${req.protocol}://${req.hostname}${req.path}`
+    ].join(' ');
 
-   return [
-     `Result =>`,
-     `\x1b[${color}m` + status + '\x1b[0m', '-',
-     tokens['response-time'](req, res), 'ms\n',
-   ].join(' ')
 }
 
 // https://github.com/expressjs/morgan/blob/master/index.js

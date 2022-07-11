@@ -3,43 +3,60 @@ version: '3'
 services:
   proxy:
     build:
-      context: ./src/oauth2-reverse-proxy
-      dockerfile: Dockerfile
-    image: proxy
-    container_name: oauth2-reverse-proxy
+      context: ./
+      dockerfile: ./src/oauth2-proxy/Dockerfile
+    image: oauth2-proxy-server
+    container_name: proxy
     restart: unless-stopped
     environment:
-      port: 8213
+      PRIVATE_EGRESS_PROXY_HOST: 'proxy'          # Traffic from internal client app out to internet
+      PRIVATE_EGRESS_PROXY_PORT: 8213
+      PUBLIC_INGRESS_PROXY_HOST: 'proxy'          # Only hosts a /callback endpoint that forwards traffic to appropriate internal client app
+      PUBLIC_INGRESS_PROXY_PORT: 8214
     ports:
       - "8213:8213"
     volumes:
-      - ./src/oauth2-reverse-proxy:/home/node/app
-      - ./src/oauth2-reverse-proxy/node_modules:/home/node/app/node_modules
+      - ./src/oauth2-proxy:/home/node/app
+      - ./src/oauth2-proxy/node_modules:/home/node/app/node_modules
     networks:
-      - app-network
-    command: /home/node/app/node_modules/.bin/nodemon index.js
+      app-network:
+        aliases:
+          - proxy
+    command: /home/node/app/node_modules/.bin/nodemon --delay 500ms index.js
+    #command: sleep infinity
+    #command: /bin/sh
+    #command: ls
+    #stdin_open: true
+    #tty: true
 
-  clientApp:
+  # The client app is a placeholder which simulates a web app launched in an
+  # ephemeral Release environment. This should be replaced with your real client
+  # app.
+  client:
     build:
-      context: ./src/oauth2-client-app
-      dockerfile: Dockerfile
-    image: proxy
-    container_name: outh2-client-app
+      context: ./
+      dockerfile: ./src/oauth2-client/Dockerfile
+    image: oauth2-proxy-client
+    container_name: client
     restart: unless-stopped
     environment:
-      port: 8080
-      http_proxy: "http://localhost:8213"
-      https_proxy: "https://localhost:8213"
-      OKTA_CLIENT_ID: "0oa5nxqk9zTjKvCqU5d7"
+      PORT: 8080
+      PROXY_HOST: "localhost"                   
+      PROXY_PORT: "8213"                        # must match proxy
+      #OKTA_CLIENT_ID: "0oa5nxqk9zTjKvCqU5d7"
       OKTA_CLIENT_SECRET: "${OKTA_CLIENT_SECRET}"
     ports:
       - "8080:8080"
     volumes:
-      - ./src/oauth2-client-app:/home/node/app
-      - ./src/oauth2-client-app/node_modules:/home/node/app/node_modules
+      - ./src/oauth2-client:/home/node/app
+      - ./src/oauth2-client/node_modules:/home/node/app/node_modules
     networks:
-      - app-network
-    command: /home/node/app/node_modules/.bin/nodemon index.js
+      app-network:
+          aliases:
+            - client
+    #command: /home/node/app/node_modules/.bin/nodemon --delay 500ms index.js
+    command: /home/node/app/node_modules/.bin/nodemon --delay 500ms -r 'global-agent/bootstrap' index.js
+    #command: sleep infinity
 
 networks:
   app-network:

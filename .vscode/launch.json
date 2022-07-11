@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
             "type": "pwa-node",
             "request": "launch",
@@ -12,10 +11,18 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            //"program": "${file}",
             "program": "${workspaceFolder}/src/oauth2-client-app/index.js",
-            //"cwd": "${fileDirname}",
             "envFile": "${workspaceFolder}/.vscode/.env"
-        }
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "OAuth2 Proxy",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/src/oauth2-proxy/index.js",
+            "envFile": "${workspaceFolder}/.vscode/.env"
+        },
     ]
 }
