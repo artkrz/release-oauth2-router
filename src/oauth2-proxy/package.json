@@ -1,0 +1,22 @@
+{
+  "name": "oauth2-reverse-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --watch app --watch libs src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "http-proxy": "^1.18.1",
+    "mockttp": "^3.2.1",
+    "regexp-quote": "^0.0.0",
+    "util": "^0.12.4"
+  }
+}
