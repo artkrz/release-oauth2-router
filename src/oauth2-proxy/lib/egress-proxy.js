@@ -1,3 +1,4 @@
+// Based on guide at https://httptoolkit.tech/blog/javascript-mitm-proxy-mockttp/
 const mockttp = require('mockttp');
 const fs = require('fs');
 const url = require('url');
@@ -8,6 +9,9 @@ const INGRESS_HOST = process.env.PUBLIC_INGRESS_PROXY_HOST;   // Hosts proxy cal
 const SSL_KEY_PATH = 'oauth2-proxy-key.pem';
 const SSL_CERT_PATH = 'oauth2-proxy-cert.pem';
 
+//TODO: Add rewrite logic for state parameter (or store some sort of state within app as a mapping)
+
+/** Starts an SSL-intercepting proxy server that rewrites OAuth redirect URIs */
 const start = async function() {
 
     const https = await getProxyCertificate();

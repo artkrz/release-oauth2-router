@@ -17,5 +17,4 @@ In order to modify proxied requests' OAuth2 parameters like `redirect_uri` or `s
 
 3. Client app or host (it depends) has imported and trusted the proxy's CA Certificate
 
-When the proxy service starts, it will check for a previously created CA Certificate (`oauth2-proxy-key.pem` and `oauth2-proxy-key.pem`). If either file is not present, it will generate new files and write them to `/home/node/app` within the container. Before deploying elsewhere, run the Docker Compose template locally, as it will mount the `/src/oauth2-proxy` as a volume at `/home/node/app` and allow you to easily grab the CA Certificate files. 
-
+When the proxy service starts, it will check for a previously created CA Certificate (`oauth2-proxy-key.pem` and `oauth2-proxy-key.pem`). If either file is not present, it will generate new files and write them to `/home/node/app` within the container. Before deploying elsewhere, run the Docker Compose template locally, as it will mount the `/src/oauth2-proxy` as a volume at `/home/node/app` and allow you to easily grab the CA Certificate files.
