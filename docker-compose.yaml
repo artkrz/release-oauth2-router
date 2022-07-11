@@ -47,9 +47,6 @@ services:
       OKTA_CLIENT_SECRET: "${OKTA_CLIENT_SECRET}"
     ports:
       - "8080:8080"
-    volumes:
-      - ./src/oauth2-client:/home/node/app
-      - ./src/oauth2-client/node_modules:/home/node/app/node_modules
     networks:
       app-network:
           aliases:
