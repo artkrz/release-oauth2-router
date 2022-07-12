@@ -33,3 +33,12 @@ To work with the router, your client app must:
 1. Configure your OAuth2 client libraries to use the router's `/callback` endpoint as your app's `redirect_uri`.
 2. Add logic to encode your ephemeral environment's final callback URL in the `state` parameter along with your original `state` value (see [example here](./apps/oauth2-client/src/lib/releasehub.js))
 
+State must be a base64 encoded JSON object with the following structure:
+
+```json
+{
+  "state": "<your-original-state-value>",
+  "url": "<your-ephemeral-envs-callback-url>"
+}
+```
+
