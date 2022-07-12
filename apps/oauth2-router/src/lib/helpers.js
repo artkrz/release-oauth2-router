@@ -1,0 +1,60 @@
+const url = require("url");
+
+exports.addHTTPLogInfoToRequest = (req, _res, next) => {
+  if (req.path === "/favicon.ico") return;
+
+  req.HTTPLogInfo = {
+    ip: req.ip,
+    protocol: req.protocol,
+    method: req.method,
+    hostname: req.hostname,
+    path: req.path,
+    headers: req.headers,
+    query: req.query,
+    body: JSON.stringify(req.body, "<br/>", 2),
+  };
+
+  const fullUrl = `${req.protocol}://${req.hostname}${req.originalUrl}`;
+  const urlQuery = url.parse(fullUrl, true).query;
+  const queryInReq = Object.keys(req.query).length > 0;
+  const queryToPrint = queryInReq ? req.query : urlQuery;
+  Object.keys(queryToPrint).forEach((key) => {
+    console.log(`  ${key} = ${queryToPrint[key]}`);
+  });
+  next();
+};
+
+exports.morganLogHandler = (tokens, req, res) => {
+  if (req.path === "/favicon.ico") return;
+
+  var status = headersSent(res) ? res.statusCode : undefined;
+
+  // get status color
+  var color =
+    status >= 500
+      ? 31 // red
+      : status >= 400
+      ? 33 // yellow
+      : status >= 300
+      ? 36 // cyan
+      : status >= 200
+      ? 32 // green
+      : 0; // no color
+  var date = new Date().toISOString();
+  date = date.substring(0, date.indexOf("."));
+  return [
+    date + " ",
+    `\x1b[${color}m` + status + "\x1b[0m",
+    "-",
+    // tokens['response-time'](req, res), 'ms - ',
+    `${req.ip} - ${req.method} ${req.protocol}://${req.hostname}${req.path}`,
+  ].join(" ");
+};
+
+// https://github.com/expressjs/morgan/blob/master/index.js
+function headersSent(res) {
+  // istanbul ignore next: node.js 0.8 support
+  return typeof res.headersSent !== "boolean"
+    ? Boolean(res._header)
+    : res.headersSent;
+}

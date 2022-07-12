@@ -1,60 +1,29 @@
 version: '3'
 
 services:
-  proxy:
+  router:
     build:
-      context: ./
-      dockerfile: ./src/oauth2-proxy/Dockerfile
-    image: oauth2-proxy-server
-    container_name: proxy
+      context: ./apps/oauth2-router
+    image: oauth2-router
+    command: npm run dev
+    container_name: router
     restart: unless-stopped
-    environment:
-      PRIVATE_EGRESS_PROXY_HOST: 'proxy'          # Traffic from internal client app out to internet
-      PRIVATE_EGRESS_PROXY_PORT: 8213
-      PUBLIC_INGRESS_PROXY_HOST: 'proxy'          # Only hosts a /callback endpoint that forwards traffic to appropriate internal client app
-      PUBLIC_INGRESS_PROXY_PORT: 8214
     ports:
-      - "8213:8213"
+      - "8081:8081"
     volumes:
-      - ./src/oauth2-proxy:/home/node/app
-      - ./src/oauth2-proxy/node_modules:/home/node/app/node_modules
-    networks:
-      app-network:
-        aliases:
-          - proxy
-    command: /home/node/app/node_modules/.bin/nodemon --delay 500ms index.js
-    #command: sleep infinity
-    #command: /bin/sh
-    #command: ls
-    #stdin_open: true
-    #tty: true
+      - ./apps/oauth2-router:/home/node/app
+      - ./apps/oauth2-router/node_modules:/home/node/app/node_modules
 
   # The client app is a placeholder which simulates a web app launched in an
   # ephemeral Release environment. This should be replaced with your real client
   # app.
   client:
     build:
-      context: ./
-      dockerfile: ./src/oauth2-client/Dockerfile
-    image: oauth2-proxy-client
+      context: ./apps/oauth2-client
+    image: oauth2-client
+    command: npm run dev
     container_name: client
     restart: unless-stopped
-    environment:
-      PORT: 8080
-      PROXY_HOST: "localhost"                   
-      PROXY_PORT: "8213"                        # must match proxy
-      #OKTA_CLIENT_ID: "0oa5nxqk9zTjKvCqU5d7"
-      OKTA_CLIENT_SECRET: "${OKTA_CLIENT_SECRET}"
+    env_file: ./apps/oauth2-client/.env
     ports:
       - "8080:8080"
-    networks:
-      app-network:
-          aliases:
-            - client
-    #command: /home/node/app/node_modules/.bin/nodemon --delay 500ms index.js
-    command: /home/node/app/node_modules/.bin/nodemon --delay 500ms -r 'global-agent/bootstrap' index.js
-    #command: sleep infinity
-
-networks:
-  app-network:
-    driver: bridge

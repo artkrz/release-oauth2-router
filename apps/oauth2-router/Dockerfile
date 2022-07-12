@@ -4,7 +4,7 @@ RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 WORKDIR /home/node/app
 
-COPY package*.json ./
+COPY ./package*.json ./
 
 RUN chown -R node:node .
 
@@ -14,6 +14,7 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-EXPOSE 8213
+EXPOSE 8081
 
-CMD [ "/home/node/app/node_modules/.bin/nodemon", "--delay", "500ms" "index.js" ]
+CMD ["node", "index.js"]
+
