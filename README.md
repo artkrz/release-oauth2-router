@@ -1,4 +1,4 @@
-# OAuth2 Proxy
+# OAuth2 Router
 
 ## Okta Dev Environment
 
