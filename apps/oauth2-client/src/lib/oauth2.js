@@ -18,7 +18,7 @@ exports.CLIENT_CONFIG = {
     clientSecret: OKTA_CLIENT_SECRET,
     accessTokenUri: `https://${OKTA_DOMAIN}/oauth2/v1/token`,
     authorizationUri: `https://${OKTA_DOMAIN}/oauth2/v1/authorize`,
-    redirectUri: `http://localhost:8081/callback`, // Callback URI for the proxy
+    redirectUri: `http://localhost:8081/callback`, // Callback URI for the router
     scopes: ["okta.apps.read"],
   },
 };
