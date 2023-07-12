@@ -25,7 +25,7 @@ function rewriteUrlForReleasehub(origUrl) {
   return url.toString();
 }
 
-function wrapState(origState, environmentRedirectUri) {
+function wrapState(origState) {
   const newStateJson = JSON.stringify({
     state: origState,
     url: getFinalCallbackUrl(),
